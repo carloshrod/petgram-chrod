@@ -1,7 +1,9 @@
-const db = require('../adapter')
+import db from "../adapter.js";
 
-function list () {
-  return db.get('categories').value()
+const { get } = db;
+
+function list() {
+  return get("categories").value();
 }
 
-module.exports = { list }
+export default { list };

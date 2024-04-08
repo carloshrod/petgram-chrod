@@ -1,35 +1,45 @@
-const db = require('../adapter')
+import db from "../adapter.js";
 
-function find ({id, favs = []}) {
-  const photo = db.get('photos').find({id: +id}).value()
+const { get } = db;
+
+function find({ id, favs = [] }) {
+  const photo = get("photos").find({ id: +id }).value();
   return {
     ...photo,
-    liked: favs.includes(id.toString())
-  }
+    liked: favs.includes(id.toString()),
+  };
 }
 
-function addLike ({ id }) {
-  return db.get('photos').find({id: +id}).update('likes', likes => likes + 1).write()
+function addLike({ id }) {
+  return get("photos")
+    .find({ id: +id })
+    .update("likes", (likes) => likes + 1)
+    .write();
 }
 
-function removeLike ({ id }) {
-  return db.get('photos').find({id: +id}).update('likes', likes => likes - 1).write()
+function removeLike({ id }) {
+  return get("photos")
+    .find({ id: +id })
+    .update("likes", (likes) => likes - 1)
+    .write();
 }
 
-function list ({categoryId, ids, favs = []}) {
-  let photos
-  if (categoryId && categoryId !== 'all') {
-    photos = db.get('photos').filter({categoryId: +categoryId}).value()
+function list({ categoryId, ids, favs = [] }) {
+  let photos;
+  if (categoryId && categoryId !== "all") {
+    photos = get("photos").filter({ categoryId: +categoryId }).value();
   } else if (ids) {
-    photos = db.get('photos').filter(photo => ids.includes(photo.id.toString())).value()
+    photos = get("photos")
+      .filter((photo) => ids.includes(photo.id.toString()))
+      .value();
   } else {
-    photos = db.get('photos').value()
+    photos = get("photos").value();
   }
 
-  return photos.map(photo => ({
+  return photos.map((photo) => ({
     ...photo,
-    liked: favs.includes(photo.id.toString())
-  }))
+    liked: favs.includes(photo.id.toString()),
+  }));
 }
 
-module.exports = { find, addLike, removeLike, list }
+export default { find, addLike, removeLike, list };
